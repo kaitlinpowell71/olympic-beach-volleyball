@@ -18,6 +18,7 @@ medal_timeline_shared <- crosstalk::SharedData$new(
 Each line tracks a country's **cumulative team medals** from Atlanta to Paris. Use the filters to focus on a country or event; hover over a point for the edition-by-edition total. Every podium finish counts once for its pair and event.
 
 ```{r}
+#| echo: false
 #| fig-height: 6
 
 crosstalk::bscols(
@@ -74,6 +75,7 @@ crosstalk::bscols(
 The next chart compares gold, silver, and bronze team medals by country. Hover for exact counts. Country totals include both men's and women's events across 1996–2024.
 
 ```{r}
+#| echo: false
 #| fig-height: 7
 
 plot_ly(

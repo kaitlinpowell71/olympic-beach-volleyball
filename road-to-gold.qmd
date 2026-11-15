@@ -18,6 +18,7 @@ Success has never belonged to just two flags. Australia won women's gold in 2000
 The chart counts a medal for the **country-team pair in an event**, not for each athlete on that pair. Each edition awards three medals in each of two events, giving `r nrow(beach_medals)` team medals across eight editions.
 
 ```{r}
+#| echo: false
 #| fig-height: 7
 #| fig-cap: "Beach volleyball team medals by country and medal type, 1996–2024."
 

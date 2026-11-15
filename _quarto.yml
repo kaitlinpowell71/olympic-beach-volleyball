@@ -29,6 +29,8 @@ format:
     smooth-scroll: true
 
 execute:
+  echo: false
+  warning: false
   message: false
 
 

@@ -14,6 +14,7 @@ Beach volleyball has featured men's and women's tournaments at every Games since
 ### Participation through the years
 
 ```{r}
+#| echo: false
 #| fig-height: 5
 #| fig-cap: "Beach volleyball athlete-event records by gender and Summer Games."
 
@@ -44,6 +45,7 @@ ggplot(
 ### Who reached the podium?
 
 ```{r}
+#| echo: false
 #| fig-height: 5
 #| fig-cap: "Countries winning beach volleyball team medals by edition and event."
 

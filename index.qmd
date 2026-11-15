@@ -36,6 +36,7 @@ source("R/data-prep.R")
 The broadest view follows every Summer Olympic athlete-event entry. The gold trace then zooms in: first on all indoor and beach **Volleyball** entries, then on beach volleyball alone, identified from the **event** field. Each panel has its own vertical scale so the specialist event remains visible.
 
 ```{r}
+#| echo: false
 #| fig-height: 7
 #| fig-cap: "Athlete-event entries at Summer Olympic Games. Panels use separate vertical scales."
 
