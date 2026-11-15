@@ -1,0 +1,35 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Olympic Beach Volleyball: Road to Gold"
+  description: "A data-led look at Olympic beach volleyball from Atlanta 1996 to Paris 2024."
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: explore.qmd
+        text: Explore the Olympics
+      - href: road-to-gold.qmd
+        text: Road to Gold
+      - href: men-vs-women.qmd
+        text: Men vs Women
+    background: "#10384a"
+    foreground: "#ffffff"
+  page-footer:
+    center: "A data story about Olympic beach volleyball · 1996–2024"
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: false
+    page-layout: full
+    smooth-scroll: true
+
+execute:
+  message: false
+
+
+

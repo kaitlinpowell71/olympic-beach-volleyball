@@ -1,0 +1,98 @@
+---
+title: "Explore the Olympics"
+---
+
+```{r}
+#| include: false
+source("R/data-prep.R")
+
+medal_timeline_shared <- crosstalk::SharedData$new(
+  medal_timeline,
+  key = ~interaction(year, country, gender),
+  group = "beach-medal-timeline"
+)
+```
+
+## A medal race across eight editions
+
+Each line tracks a country's **cumulative team medals** from Atlanta to Paris. Use the filters to focus on a country or event; hover over a point for the edition-by-edition total. Every podium finish counts once for its pair and event.
+
+```{r}
+#| fig-height: 6
+
+crosstalk::bscols(
+  widths = c(2, 2, 8),
+  crosstalk::filter_select(
+    id = "country-filter",
+    label = "Country",
+    sharedData = medal_timeline_shared,
+    group = ~country,
+    multiple = TRUE
+  ),
+  crosstalk::filter_select(
+    id = "gender-filter",
+    label = "Event",
+    sharedData = medal_timeline_shared,
+    group = ~gender,
+    multiple = TRUE
+  ),
+  plot_ly(
+    medal_timeline_shared,
+    x = ~year,
+    y = ~cumulative_medals,
+    color = ~country,
+    symbol = ~gender,
+    split = ~interaction(country, gender, drop = TRUE),
+    type = "scatter",
+    mode = "lines+markers",
+    text = ~paste(
+      country,
+      gender,
+      year,
+      "Cumulative team medals:",
+      cumulative_medals
+    ),
+    hoverinfo = "text",
+    colors = grDevices::hcl.colors(
+      dplyr::n_distinct(medal_timeline$country),
+      palette = "Dynamic"
+    ),
+    marker = list(size = 6),
+    line = list(width = 2)
+  ) |>
+    layout(
+      xaxis = list(title = "Summer Games", tickmode = "array", tickvals = sort(unique(beach_medals$year))),
+      yaxis = list(title = "Cumulative team medals", rangemode = "tozero"),
+      legend = list(orientation = "h"),
+      margin = list(b = 55)
+    )
+)
+```
+
+## What those medals are made of
+
+The next chart compares gold, silver, and bronze team medals by country. Hover for exact counts. Country totals include both men's and women's events across 1996–2024.
+
+```{r}
+#| fig-height: 7
+
+plot_ly(
+  country_medal_type_totals,
+  x = ~country,
+  y = ~medal_count,
+  color = ~medal,
+  type = "bar",
+  text = ~paste(country, medal, medal_count),
+  hoverinfo = "text",
+  colors = c(Gold = "#c99837", Silver = "#9caab5", Bronze = "#b87950")
+) |>
+  layout(
+    barmode = "stack",
+    xaxis = list(title = NULL, categoryorder = "array", categoryarray = country_medal_totals$country),
+    yaxis = list(title = "Team medals", rangemode = "tozero"),
+    legend = list(orientation = "h"),
+    margin = list(b = 110)
+  )
+```
+
+**Data note:** the 2020 and 2024 athlete-event records do not carry beach-volleyball medal labels in this release of the source. Their podium teams are added from the [Tokyo 2020 results](https://olympics.com/en/olympic-games/tokyo-2020/results/volleyball/beach-volleyball) and [Paris 2024 results](https://olympics.com/en/olympic-games/paris-2024/results/volleyball/beach-volleyball), not inferred from missing values.

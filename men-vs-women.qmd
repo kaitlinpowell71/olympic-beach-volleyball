@@ -1,0 +1,75 @@
+---
+title: "Men vs Women"
+---
+
+```{r}
+#| include: false
+source("R/data-prep.R")
+```
+
+## Two events, one Olympic stage
+
+Beach volleyball has featured men's and women's tournaments at every Games since its 1996 debut. Participation below is measured in athlete-event records—two records for each competing pair—while medal bars count podium teams once.
+
+### Participation through the years
+
+```{r}
+#| fig-height: 5
+#| fig-cap: "Beach volleyball athlete-event records by gender and Summer Games."
+
+ggplot(
+  beach_participation_by_year,
+  aes(x = year, y = athlete_event_records, color = gender, group = gender)
+) +
+  geom_line(linewidth = 1.1) +
+  geom_point(size = 2.4) +
+  scale_color_manual(values = c(Men = "#147f91", Women = "#c99837")) +
+  scale_x_continuous(breaks = sort(unique(beach_participation_by_year$year))) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    x = NULL,
+    y = "Athlete-event records",
+    color = "Event",
+    caption = "Source: olympicAthletes::olympic_athletes; beach volleyball identified from the event field."
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.caption = element_text(color = "#637780", hjust = 0)
+  )
+```
+
+### Who reached the podium?
+
+```{r}
+#| fig-height: 5
+#| fig-cap: "Countries winning beach volleyball team medals by edition and event."
+
+beach_medals |>
+  mutate(
+    country = factor(country, levels = rev(country_medal_totals$country))
+  ) |>
+  ggplot(aes(x = factor(year), y = country, fill = medal)) +
+  geom_tile(width = 0.86, height = 0.88, color = "white", linewidth = 0.3) +
+  facet_wrap(~gender, ncol = 1) +
+  scale_fill_manual(
+    values = c(Gold = "#c99837", Silver = "#9caab5", Bronze = "#b87950"),
+    breaks = c("Gold", "Silver", "Bronze")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Medal",
+    caption = "Each tile represents one medal-winning country-team. 2020 and 2024 podiums are sourced from official Olympic results."
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    strip.text = element_text(face = "bold", color = "#10384a"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.caption = element_text(color = "#637780", hjust = 0)
+  )
+```

@@ -1,0 +1,87 @@
+---
+title: "Olympic Beach Volleyball: Road to Gold"
+---
+
+```{r}
+#| include: false
+source("R/data-prep.R")
+```
+
+<div class="hero">
+  <p class="eyebrow">Atlanta 1996 — Paris 2024</p>
+  <h2>Where the world meets the sand.</h2>
+  <p>Follow beach volleyball from its Olympic debut to a new generation of champions. This story uses athlete-event records to put the sport in the wider Olympic picture—and team results to trace every medal.</p>
+  <a class="hero-link" href="explore.qmd">Explore the data <span aria-hidden="true">→</span></a>
+</div>
+
+::: {.stats-grid}
+::: {.stat-card}
+<span class="stat-value">`r scales::comma(source_records)`</span>
+<span class="stat-label">athlete-event records in the source</span>
+:::
+
+::: {.stat-card}
+<span class="stat-value">`r scales::comma(summer_records_used)`</span>
+<span class="stat-label">Summer Games records used in the chart</span>
+:::
+
+::: {.stat-card}
+<span class="stat-value">`r scales::comma(nrow(beach_athletes))`</span>
+<span class="stat-label">beach volleyball athlete-event records, 1996–2024</span>
+:::
+:::
+
+## One Olympic timeline, three lenses
+
+The broadest view follows every Summer Olympic athlete-event entry. The gold trace then zooms in: first on all indoor and beach **Volleyball** entries, then on beach volleyball alone, identified from the **event** field. Each panel has its own vertical scale so the specialist event remains visible.
+
+```{r}
+#| fig-height: 7
+#| fig-cap: "Athlete-event entries at Summer Olympic Games. Panels use separate vertical scales."
+
+ggplot(
+  participation_by_year,
+  aes(x = year, y = records, color = series, group = series)
+) +
+  geom_line(linewidth = 1.05) +
+  geom_point(size = 2.2) +
+  facet_wrap(~series, ncol = 1, scales = "free_y") +
+  scale_color_manual(
+    values = c(
+      "All Summer sport entries" = "#315d70",
+      "Volleyball sport entries" = "#0e8292",
+      "Beach volleyball event entries" = "#c99837"
+    )
+  ) +
+  scale_x_continuous(breaks = scales::breaks_width(8)) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    x = NULL,
+    y = "Athlete-event records",
+    color = NULL,
+    caption = paste(
+      "Source: olympicAthletes::olympic_athletes.",
+      scales::comma(summer_records_used),
+      "Summer Games records aggregated; the dataset contains",
+      scales::comma(source_records),
+      "records overall."
+    )
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(face = "bold", color = "#10384a"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.title.y = element_text(color = "#355260"),
+    plot.caption = element_text(color = "#637780", hjust = 0)
+  )
+```
+
+::: {.callout-note}
+## What counts as a record?
+
+One row represents one athlete at one Games edition in one event—not one unique person or one team. The source has **`r scales::comma(source_records)`** rows; the chart aggregates the **`r scales::comma(summer_records_used)`** Summer Games rows. Beach volleyball is filtered from `event` within the Volleyball sport, rather than treating all Volleyball entries as beach volleyball.
+:::
+
+**Sources:** [olympicAthletes package and data documentation](https://moderndive.github.io/olympicAthletes/). See [methodology and results sources](road-to-gold.qmd#methodology) for team-medal counting and the recent podium supplement.

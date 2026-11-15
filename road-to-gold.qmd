@@ -1,0 +1,64 @@
+---
+title: "Road to Gold"
+---
+
+```{r}
+#| include: false
+source("R/data-prep.R")
+```
+
+## A short history of the podium
+
+Since beach volleyball joined the Olympic programme in 1996, **Brazil has earned `r brazil_medals` team medals, including `r brazil_gold_medals` golds**. Brazil reached the podium at every Games from 1996 through 2016, then returned to the top of the women's podium in Paris. **The United States is next with `r usa_medals` medals, `r usa_gold_medals` of them gold**, built across both men's and women's events.
+
+Success has never belonged to just two flags. Australia won women's gold in 2000; Germany's golds came in the men's event in 2012 and the women's in 2016; and China took silver and bronze in the 2008 women's competition. More recently, Norway and Sweden captured men's gold in Tokyo and Paris, while Qatar earned men's bronze at both editions.
+
+## Every medal, counted once
+
+The chart counts a medal for the **country-team pair in an event**, not for each athlete on that pair. Each edition awards three medals in each of two events, giving `r nrow(beach_medals)` team medals across eight editions.
+
+```{r}
+#| fig-height: 7
+#| fig-cap: "Beach volleyball team medals by country and medal type, 1996–2024."
+
+country_medal_type_totals |>
+  mutate(country = forcats::fct_reorder(country, medal_count, .fun = sum)) |>
+  ggplot(aes(x = medal_count, y = country, fill = medal)) +
+  geom_col(width = 0.72, color = "white", linewidth = 0.25) +
+  scale_fill_manual(
+    values = c(Gold = "#c99837", Silver = "#9caab5", Bronze = "#b87950"),
+    breaks = c("Gold", "Silver", "Bronze")
+  ) +
+  scale_x_continuous(
+    breaks = scales::breaks_pretty(),
+    expand = expansion(mult = c(0, 0.06))
+  ) +
+  labs(
+    x = "Team medals",
+    y = NULL,
+    fill = "Medal",
+    caption = paste(
+      "One team medal per pair and event. Sources: olympicAthletes for 1996–2016;",
+      "official Olympic results for Tokyo 2020 and Paris 2024."
+    )
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_text(color = "#294655"),
+    plot.caption = element_text(color = "#637780", hjust = 0)
+  )
+```
+
+## Methodology {#methodology}
+
+- The source is [`olympicAthletes::olympic_athletes`](https://moderndive.github.io/olympicAthletes/), a 315,094-row, 16-column athlete-event dataset. The package describes 1896–2016 records as extending the [Olympic history dataset](https://github.com/rgriff23/Olympic_history), with later records sourced from [Olympedia](https://www.olympedia.org/).
+- Beach volleyball is selected by requiring `sport == "Volleyball"` **and** a beach-volleyball match in `event`. The package's 4,792-row `volleyball_athletes` subset contains indoor and beach volleyball; it is not used as a beach-volleyball count.
+- For 1996–2016, the source repeats the medal on both athletes' rows. We retain one row for each Games year, event, team identifier, and medal, then normalize team suffixes (such as `-1`) only when aggregating results by country.
+- The package data used here has no beach-volleyball medal labels for 2020 or 2024. We add the six podium teams for each of those editions from the [Tokyo 2020](https://olympics.com/en/olympic-games/tokyo-2020/results/volleyball/beach-volleyball) and [Paris 2024](https://olympics.com/en/olympic-games/paris-2024/results/volleyball/beach-volleyball) official results pages. These are team-level rows, so no athlete-level medal duplication is introduced.
+- Participation charts count athlete-event rows; medal charts count medal-winning teams. A pair therefore contributes two participation records but only one medal.
+- To render the site, install R packages `olympicAthletes`, `tidyverse`, `ggplot2`, `plotly`, and `crosstalk`, then run `quarto render`.
+
+For other country results, edition details, and filters, head to [Explore the Olympics](explore.qmd).

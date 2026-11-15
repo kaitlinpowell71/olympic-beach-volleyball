@@ -1,0 +1,198 @@
+:root {
+  --ocean: #10384a;
+  --ocean-soft: #315d70;
+  --sea-glass: #147f91;
+  --sand: #f4efe4;
+  --gold: #c99837;
+  --ink: #203b48;
+  --muted: #637780;
+}
+
+body {
+  background: #fbfaf7;
+  color: var(--ink);
+  font-family: Inter, "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+.navbar {
+  box-shadow: 0 2px 14px rgb(11 34 46 / 12%);
+}
+
+.navbar-brand,
+.navbar .nav-link {
+  letter-spacing: 0.01em;
+}
+
+.navbar .nav-link.active {
+  font-weight: 700;
+}
+
+.quarto-title-block {
+  max-width: 1180px;
+  margin: 2rem auto 1.25rem;
+  padding: 0 1.25rem;
+}
+
+.quarto-title .title {
+  color: var(--ocean);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+#quarto-content main.content {
+  max-width: 1180px;
+  padding: 0 1.25rem 3rem;
+}
+
+h2,
+h3 {
+  color: var(--ocean);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin-top: 2.4rem;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 1.5rem;
+  padding: clamp(2rem, 5vw, 4.25rem);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at 88% 20%, rgb(201 152 55 / 30%) 0 5rem, transparent 5.1rem),
+    radial-gradient(circle at 96% 95%, rgb(20 127 145 / 35%) 0 12rem, transparent 12.1rem),
+    linear-gradient(118deg, #10384a 0%, #155268 64%, #1c7580 100%);
+  color: #fff;
+  box-shadow: 0 18px 42px rgb(16 56 74 / 17%);
+}
+
+.hero .eyebrow {
+  margin: 0 0 0.75rem;
+  color: #f1cf80;
+  font-size: 0.76rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero h2 {
+  max-width: 720px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.65rem);
+  line-height: 1.08;
+}
+
+.hero > p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 1.15rem 0 0;
+  color: rgb(255 255 255 / 87%);
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.hero-link {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 1.45rem;
+  padding: 0.72rem 1rem;
+  border: 1px solid rgb(255 255 255 / 52%);
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.hero-link:hover {
+  transform: translateY(-1px);
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 2rem;
+}
+
+.stat-card {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.15rem 1.3rem;
+  border: 1px solid #e6e1d8;
+  border-top: 3px solid var(--gold);
+  border-radius: 0.85rem;
+  background: #fff;
+  box-shadow: 0 6px 20px rgb(16 56 74 / 5%);
+}
+
+.stat-value {
+  color: var(--ocean);
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-weight: 760;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.stat-label {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.callout-note {
+  border-left-color: var(--gold);
+  background: #f7f3e9;
+}
+
+.callout-note .callout-title-container {
+  color: var(--ocean);
+}
+
+.source-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.crosstalk-input {
+  margin-bottom: 1rem;
+}
+
+.crosstalk-input label {
+  color: var(--ocean);
+  font-weight: 650;
+}
+
+.plotly,
+.cell-output-display {
+  max-width: 100%;
+}
+
+figcaption,
+.figure-caption {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 700px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    border-radius: 0.9rem;
+  }
+
+  .quarto-title-block {
+    margin-top: 1.25rem;
+  }
+}
