@@ -12,6 +12,8 @@ body {
   background: #fbfaf7;
   color: var(--ink);
   font-family: Inter, "Segoe UI", "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
 .navbar {
@@ -23,43 +25,91 @@ body {
   letter-spacing: 0.01em;
 }
 
+.navbar .navbar-nav {
+  gap: 0.3rem;
+}
+
+.navbar .nav-link {
+  padding: 0.65rem 0.85rem;
+}
+
 .navbar .nav-link.active {
   font-weight: 700;
 }
 
 .quarto-title-block {
-  max-width: 1180px;
-  margin: 2rem auto 1.25rem;
-  padding: 0 1.25rem;
+  max-width: 1200px;
+  margin: 2.5rem auto 1.75rem;
+  padding: 0 1.5rem;
 }
 
 .quarto-title .title {
   color: var(--ocean);
   font-weight: 750;
   letter-spacing: -0.035em;
+  line-height: 1.12;
+  text-align: left;
 }
 
 #quarto-content main.content {
-  max-width: 1180px;
-  padding: 0 1.25rem 3rem;
+  max-width: 1200px;
+  padding: 0 1.5rem 4rem;
 }
 
+main.content > p,
+main.content > ul,
+main.content > ol,
+main.content section > p,
+main.content section > ul,
+main.content section > ol {
+  max-width: 76ch;
+}
+
+h1,
 h2,
 h3 {
   color: var(--ocean);
   font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-align: left;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
 }
 
 h2 {
-  margin-top: 2.4rem;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+}
+
+main.content section:first-of-type > h2 {
+  margin-top: 0.5rem;
+}
+
+h3 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.85rem;
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+}
+
+p,
+ul,
+ol {
+  margin-bottom: 1.2rem;
+}
+
+li + li {
+  margin-top: 0.4rem;
 }
 
 .hero {
   position: relative;
   overflow: hidden;
-  margin: 0 0 1.5rem;
-  padding: clamp(2rem, 5vw, 4.25rem);
+  margin: 0 0 2.5rem;
+  padding: clamp(2.25rem, 6vw, 4.75rem);
   border-radius: 1.25rem;
   background:
     radial-gradient(circle at 88% 20%, rgb(201 152 55 / 30%) 0 5rem, transparent 5.1rem),
@@ -82,7 +132,7 @@ h2 {
   max-width: 720px;
   margin: 0;
   color: #fff;
-  font-size: clamp(2rem, 5vw, 3.65rem);
+  font-size: clamp(2.1rem, 5vw, 3.75rem);
   line-height: 1.08;
 }
 
@@ -117,21 +167,31 @@ h2 {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin: 1.25rem 0 2rem;
+  align-items: stretch;
+  gap: 1.25rem;
+  margin: 1.75rem 0 2.75rem;
 }
 
 .stat-card {
   display: flex;
-  min-height: 112px;
+  min-height: 132px;
   flex-direction: column;
   justify-content: center;
-  padding: 1.15rem 1.3rem;
+  padding: 1.5rem;
   border: 1px solid #e6e1d8;
   border-top: 3px solid var(--gold);
-  border-radius: 0.85rem;
+  border-radius: 1rem;
   background: #fff;
-  box-shadow: 0 6px 20px rgb(16 56 74 / 5%);
+  box-shadow: 0 8px 24px rgb(16 56 74 / 6%);
+}
+
+.stat-card p {
+  margin: 0;
+}
+
+.stat-value,
+.stat-label {
+  display: block;
 }
 
 .stat-value {
@@ -150,12 +210,17 @@ h2 {
 }
 
 .callout-note {
+  margin: 2rem 0;
   border-left-color: var(--gold);
   background: #f7f3e9;
 }
 
 .callout-note .callout-title-container {
   color: var(--ocean);
+}
+
+.callout-note p:last-child {
+  margin-bottom: 0;
 }
 
 .source-note {
@@ -177,22 +242,261 @@ h2 {
   max-width: 100%;
 }
 
+.cell-output-display {
+  margin: 1.5rem 0 2rem;
+}
+
+figure,
+.quarto-figure {
+  margin: 2rem auto 2.5rem;
+}
+
+.cell-output-display figure {
+  margin: 0 auto;
+}
+
+.medal-map-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: end;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e6e1d8;
+  border-radius: 0.85rem;
+  background: #fff;
+}
+
+.medal-map-filter {
+  display: flex;
+  min-width: 13rem;
+  flex: 1 1 13rem;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.medal-map-filter label {
+  color: var(--ocean);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.medal-map-filter .form-select {
+  border-color: #d6dfdf;
+  color: var(--ink);
+}
+
+.medal-map-widget .leaflet-container {
+  border: 1px solid #d5e0e0;
+  border-radius: 0.9rem;
+  background: #e8f1f2;
+  font-family: inherit;
+}
+
+.medal-map-legend {
+  min-width: 180px;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.65rem;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 2px 12px rgb(16 56 74 / 15%);
+  color: var(--ocean);
+  font-size: 0.8rem;
+}
+
+.medal-map-gradient {
+  height: 0.65rem;
+  margin-top: 0.55rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #e8f1f2,
+    #b8d7d9,
+    #76b7bc,
+    #328991,
+    #10384a
+  );
+}
+
+.medal-map-legend-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.2rem;
+  color: var(--muted);
+}
+
+.medal-map-no-medals {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.55rem;
+  color: var(--muted);
+}
+
+.medal-map-no-medals i {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid #ddd9d0;
+  border-radius: 0.15rem;
+  background: #f0eee8;
+}
+
+.medal-map-attribution {
+  padding: 0.25rem 0.45rem;
+  border-radius: 0.25rem;
+  background: rgb(255 255 255 / 88%);
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.medal-country-ranking {
+  width: min(100%, 900px);
+  margin: 1.25rem 0 2.5rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid #e6e1d8;
+  border-radius: 0.85rem;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(16 56 74 / 5%);
+}
+
+.medal-country-ranking th,
+.medal-country-ranking td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eeeae2;
+}
+
+.medal-country-ranking thead th {
+  background: var(--ocean);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.medal-country-ranking thead th:nth-child(2),
+.medal-country-ranking tbody th {
+  text-align: left;
+}
+
+.medal-country-ranking tbody th {
+  color: var(--ocean);
+  font-weight: 650;
+}
+
+.medal-country-ranking tbody td {
+  color: var(--ink);
+  text-align: right;
+}
+
+.medal-country-ranking tbody td:first-child {
+  color: var(--muted);
+  text-align: center;
+}
+
+.medal-country-ranking tbody tr:nth-child(even) {
+  background: #fbfaf7;
+}
+
+.medal-country-ranking tbody tr:last-child th,
+.medal-country-ranking tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.about-links ul {
+  display: grid;
+  max-width: 900px;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.85rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-links li {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid #e6e1d8;
+  border-top: 3px solid var(--gold);
+  border-radius: 0.85rem;
+  background: #fff;
+  box-shadow: 0 6px 18px rgb(16 56 74 / 5%);
+}
+
+.about-links a {
+  color: var(--ocean);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.about-links a:hover {
+  color: var(--sea-glass);
+  text-decoration: underline;
+}
+
 figcaption,
 .figure-caption {
   color: var(--muted);
   font-size: 0.88rem;
+  line-height: 1.55;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 991.98px) {
+  .navbar .navbar-collapse {
+    padding: 0.5rem 0 0.75rem;
+  }
+
+  .navbar .navbar-nav {
+    gap: 0.15rem;
+  }
+
+  .navbar .nav-link {
+    padding: 0.6rem 0.25rem;
+  }
+}
+
+@media (max-width: 767.98px) {
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .quarto-title-block {
+    margin-top: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  #quarto-content main.content {
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
   }
 
   .hero {
     border-radius: 0.9rem;
+    padding: clamp(1.75rem, 7vw, 2.75rem);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
 
-  .quarto-title-block {
-    margin-top: 1.25rem;
+  .medal-map-widget .leaflet {
+    height: 480px !important;
+  }
+
+  .medal-country-ranking th,
+  .medal-country-ranking td {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .stat-card {
+    min-height: 112px;
+  }
+
+  h2 {
+    margin-top: 2.5rem;
   }
 }

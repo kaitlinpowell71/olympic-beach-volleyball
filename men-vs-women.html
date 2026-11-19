@@ -74,6 +74,15 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.12.1/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -101,16 +110,26 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./explore.html"> 
-<span class="menu-text">Explore the Olympics</span></a>
+    <a class="nav-link" href="./road-to-gold.html"> 
+<span class="menu-text">Medal Leaders</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./road-to-gold.html"> 
-<span class="menu-text">Road to Gold</span></a>
+    <a class="nav-link" href="./explore.html"> 
+<span class="menu-text">Country Explorer</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./men-vs-women.html" aria-current="page"> 
-<span class="menu-text">Men vs Women</span></a>
+<span class="menu-text">Men vs.&nbsp;Women</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./olympic-trends.html"> 
+<span class="menu-text">Olympic Trends</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -161,19 +180,18 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p>Recorded participation begins lower for women at the sport’s debut: 36 athlete-event rows versus 48 for men in 1996. From 2000 through 2024, both events have 48 rows per Games in this dataset; these are athlete-event counts, not audience or popularity measures.</p>
 </section>
 <section id="who-reached-the-podium" class="level3">
 <h3 class="anchored" data-anchor-id="who-reached-the-podium">Who reached the podium?</h3>
 <div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="men-vs-women_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption>Countries winning beach volleyball team medals by edition and event.</figcaption>
-</figure>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-22a13575808135d4343e" style="width:100%;height:350px;"></div>
+<script type="application/json" data-for="htmlwidget-22a13575808135d4343e">{"x":{"data":[{"x":[0.78333333333333333,1.7833333333333332,3,4,4.7833333333333332,5.7833333333333332,7.2166666666666668,8],"y":[11,13,7,15,9,5,8,8],"text":["Canada Men 1996 Bronze team medal","Germany Men 2000 Bronze team medal","Switzerland Men 2004 Bronze team medal","Brazil Men 2008 Bronze team medal","Latvia Men 2012 Bronze team medal","Netherlands Men 2016 Bronze team medal","Qatar Men 2020 Bronze team medal","Qatar Men 2024 Bronze team medal"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(184,121,80,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(184,121,80,1)"}},"hoveron":"points","name":"Bronze","legendgroup":"Bronze","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[0.78333333333333333,2,2.7833333333333332,3.7833333333333332,5.2166666666666668,6,6.7833333333333332,7.7833333333333332],"y":[12,15,14,10,15,14,7,9],"text":["Australia Women 1996 Bronze team medal","Brazil Women 2000 Bronze team medal","United States Women 2004 Bronze team medal","China Women 2008 Bronze team medal","Brazil Women 2012 Bronze team medal","United States Women 2016 Bronze team medal","Switzerland Women 2020 Bronze team medal","Latvia Women 2024 Bronze team medal"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(184,121,80,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(184,121,80,1)"}},"hoveron":"points","name":"Bronze","legendgroup":"Bronze","showlegend":false,"xaxis":"x2","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3.2166666666666668,3.7833333333333332,5,6.2166666666666668,7,7.7833333333333332],"y":[14,14,15,14,13,15,4,1],"text":["United States Men 1996 Gold team medal","United States Men 2000 Gold team medal","Brazil Men 2004 Gold team medal","United States Men 2008 Gold team medal","Germany Men 2012 Gold team medal","Brazil Men 2016 Gold team medal","Norway Men 2020 Gold team medal","Sweden Men 2024 Gold team medal"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(201,152,55,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(201,152,55,1)"}},"hoveron":"points","name":"Gold","legendgroup":"Gold","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1.7833333333333332,3,4.2166666666666668,4.7833333333333332,5.7833333333333332,7.2166666666666668,8.2166666666666668],"y":[15,12,14,14,14,13,14,15],"text":["Brazil Women 1996 Gold team medal","Australia Women 2000 Gold team medal","United States Women 2004 Gold team medal","United States Women 2008 Gold team medal","United States Women 2012 Gold team medal","Germany Women 2016 Gold team medal","United States Women 2020 Gold team medal","Brazil Women 2024 Gold team medal"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(201,152,55,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(201,152,55,1)"}},"hoveron":"points","name":"Gold","legendgroup":"Gold","showlegend":false,"xaxis":"x2","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.2166666666666668,2.2166666666666668,2.7833333333333332,4.2166666666666668,5.2166666666666668,6,6.7833333333333332,8.2166666666666668],"y":[14,15,2,15,15,6,3,13],"text":["United States Men 1996 Silver team medal","Brazil Men 2000 Silver team medal","Spain Men 2004 Silver team medal","Brazil Men 2008 Silver team medal","Brazil Men 2012 Silver team medal","Italy Men 2016 Silver team medal","ROC Men 2020 Silver team medal","Germany Men 2024 Silver team medal"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(156,170,181,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(156,170,181,1)"}},"hoveron":"points","name":"Silver","legendgroup":"Silver","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.2166666666666668,2.2166666666666668,3.2166666666666668,4,5,6.2166666666666668,7,8],"y":[15,15,15,10,14,15,12,11],"text":["Brazil Women 1996 Silver team medal","Brazil Women 2000 Silver team medal","Brazil Women 2004 Silver team medal","China Women 2008 Silver team medal","United States Women 2012 Silver team medal","Brazil Women 2016 Silver team medal","Australia Women 2020 Silver team medal","Canada Women 2024 Silver team medal"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(156,170,181,1)","opacity":1,"size":10.58267716535433,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(156,170,181,1)"}},"hoveron":"points","name":"Silver","legendgroup":"Silver","showlegend":false,"xaxis":"x2","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":36.722291407222919,"r":7.9701120797011216,"b":40.647571606475722,"l":110.78455790784564},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"xaxis":{"domain":[0,0.49760513459143596],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,8.5999999999999996],"tickmode":"array","ticktext":["1996","2000","2004","2008","2012","2016","2020","2024"],"tickvals":[1,2,3,4,5,6,7,8],"categoryorder":"array","categoryarray":["1996","2000","2004","2008","2012","2016","2020","2024"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":"","hoverformat":".2f"},"annotations":[{"text":"Olympic year","x":0.5,"y":0,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"center","yanchor":"top","annotationType":"axis","yshift":-23.910336239103373},{"text":"Medal-winning country","x":0,"y":0.5,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243},"xref":"paper","yref":"paper","textangle":-90,"xanchor":"right","yanchor":"center","annotationType":"axis","xshift":-94.047322540473246},{"text":"Men","x":0.24880256729571798,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(16,56,74,1)","family":"","size":12.7521793275218},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"center","yanchor":"bottom"},{"text":"Women","x":0.75119743270428208,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(16,56,74,1)","family":"","size":12.7521793275218},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"center","yanchor":"bottom"}],"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,15.6],"tickmode":"array","ticktext":["Sweden","Spain","ROC","Norway","Netherlands","Italy","Switzerland","Qatar","Latvia","China","Canada","Australia","Germany","United States","Brazil"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"categoryorder":"array","categoryarray":["Sweden","Spain","ROC","Norway","Netherlands","Italy","Switzerland","Qatar","Latvia","China","Canada","Australia","Germany","United States","Brazil"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.72455564360919278,"zeroline":false,"anchor":"x","title":"","hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":0.49760513459143596,"y0":0,"y1":25.5043586550436,"yanchor":1,"ysizemode":"pixel"},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0.50239486540856404,"x1":1,"y0":0,"y1":25.5043586550436,"yanchor":1,"ysizemode":"pixel"}],"xaxis2":{"type":"linear","autorange":false,"range":[0.40000000000000002,8.5999999999999996],"tickmode":"array","ticktext":["1996","2000","2004","2008","2012","2016","2020","2024"],"tickvals":[1,2,3,4,5,6,7,8],"categoryorder":"array","categoryarray":["1996","2000","2004","2008","2012","2016","2020","2024"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"domain":[0.50239486540856404,1],"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":"","hoverformat":".2f"},"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":12.7521793275218},"orientation":"h","x":0.5,"y":1.02,"xanchor":"center","yanchor":"bottom","title":{"text":"Medal","font":{"color":"rgba(0,0,0,1)","family":"","size":15.940224159402243}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"aaf32a321e24":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"}},"cur_data":"aaf32a321e24","visdat":{"aaf32a321e24":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>Each point is one medal-winning country-team. Panels compare men’s and women’s results by Olympic year; hover for details.</p>
 </div>
 </div>
-</div>
+<p>Across eight editions, each event awards 24 team medals. Brazil leads both tallies (8 women’s and 6 men’s medals), while the United States has 7 women’s and 4 men’s; Australia’s three medals are all in the women’s event.</p>
 
 
 </section>
