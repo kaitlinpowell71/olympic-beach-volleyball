@@ -119,8 +119,32 @@ country_medal_totals <- beach_medals |>
   count(country, name = "total_medals") |>
   arrange(desc(total_medals), country)
 
-medals_by_year_country <- beach_medals |>
-  count(year, country, gender, name = "medal_count")
+medals_by_year_country_gender <- beach_medals |>
+  group_by(year, country, gender) |>
+  summarise(
+    gold = sum(medal == "Gold"),
+    silver = sum(medal == "Silver"),
+    bronze = sum(medal == "Bronze"),
+    team_medals = n(),
+    .groups = "drop"
+  )
+
+medals_by_year_country <- medals_by_year_country_gender |>
+  transmute(year, country, gender, medal_count = team_medals)
+
+medals_by_year_country_total <- medals_by_year_country_gender |>
+  group_by(year, country) |>
+  summarise(
+    across(c(gold, silver, bronze, team_medals), sum),
+    .groups = "drop"
+  )
+
+medals_by_country_gender <- medals_by_year_country_gender |>
+  group_by(country, gender) |>
+  summarise(
+    across(c(gold, silver, bronze, team_medals), sum),
+    .groups = "drop"
+  )
 
 medal_timeline <- expand_grid(
   year = sort(unique(beach_medals$year)),

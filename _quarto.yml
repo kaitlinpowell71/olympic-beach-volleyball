@@ -9,12 +9,18 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: explore.qmd
-        text: Explore the Olympics
       - href: road-to-gold.qmd
-        text: Road to Gold
+        text: Medal Leaders
+      - href: explore.qmd
+        text: Country Explorer
       - href: men-vs-women.qmd
-        text: Men vs Women
+        text: Men vs. Women
+      - href: olympic-trends.qmd
+        text: Olympic Trends
+    right:
+      - href: about.qmd
+        text: About
+    collapse-below: lg
     background: "#10384a"
     foreground: "#ffffff"
   page-footer:

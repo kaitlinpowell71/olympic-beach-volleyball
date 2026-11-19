@@ -1,0 +1,19 @@
+---
+title: "About"
+---
+
+## About Me
+
+I'm **Kaitlin Powell**, a student-athlete at New College of Florida, studying psychology and playing collegiate beach volleyball. My interest in the sport inspired this Olympic data project.
+
+::: {.about-links}
+- [GitHub profile](https://github.com/kaitlinpowell71)
+- [Project repository](https://github.com/kaitlinpowell71/olympic-beach-volleyball)
+- [New College of Florida](https://www.ncf.edu/)
+:::
+
+**Contact email:** *[Add your email address here]*
+
+## Data Sources
+
+This project uses the [`olympicAthletes::olympic_athletes` dataset](https://moderndive.github.io/olympicAthletes/), which contains Olympic athlete-event records; its documented historical sources include the [Olympic history dataset](https://github.com/rgriff23/Olympic_history) and [Olympedia](https://www.olympedia.org/). The preparation script filters Summer Games records for Volleyball events identified as beach volleyball. Participation counts athlete-event rows, while medal results through 2016 are deduplicated by year, event, team, and medal so each pair earns one team medal. Tokyo 2020 and Paris 2024 team podiums are added from the [official Tokyo results](https://olympics.com/en/olympic-games/tokyo-2020/results/volleyball/beach-volleyball) and [official Paris results](https://olympics.com/en/olympic-games/paris-2024/results/volleyball/beach-volleyball).

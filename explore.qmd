@@ -11,7 +11,355 @@ medal_timeline_shared <- crosstalk::SharedData$new(
   key = ~interaction(year, country, gender),
   group = "beach-medal-timeline"
 )
+
+medal_map_years <- sort(unique(beach_medals$year))
+
+medal_map_counts_long <- tidyr::expand_grid(
+  year_filter = c("all", as.character(medal_map_years)),
+  gender_filter = c("all", "Men", "Women")
+) |>
+  dplyr::mutate(
+    counts = purrr::map2(
+      year_filter,
+      gender_filter,
+      \(year_filter, gender_filter) {
+        beach_medals |>
+          dplyr::filter(
+            if (year_filter == "all") TRUE else year == as.integer(year_filter),
+            if (gender_filter == "all") TRUE else gender == gender_filter
+          ) |>
+          dplyr::count(country, medal, name = "medal_count") |>
+          tidyr::pivot_wider(
+            names_from = medal,
+            values_from = medal_count,
+            values_fill = 0L
+          ) |>
+          dplyr::mutate(total = Gold + Silver + Bronze)
+      }
+    )
+  ) |>
+  tidyr::unnest(counts) |>
+  dplyr::mutate(
+    year_key = dplyr::if_else(
+      year_filter == "all",
+      "all",
+      paste0("y", year_filter)
+    ),
+    gender_key = stringr::str_to_lower(gender_filter)
+  ) |>
+  dplyr::select(
+    country,
+    year_key,
+    gender_key,
+    Gold,
+    Silver,
+    Bronze,
+    total
+  ) |>
+  tidyr::pivot_wider(
+    names_from = c(year_key, gender_key),
+    values_from = c(Gold, Silver, Bronze, total),
+    names_glue = "{year_key}_{gender_key}_{.value}"
+  ) |>
+  dplyr::rename_with(stringr::str_to_lower)
+
+medal_map_boundaries <- rnaturalearth::ne_countries(
+  scale = "medium",
+  returnclass = "sf"
+) |>
+  dplyr::transmute(
+    country_key = dplyr::case_when(
+      admin == "United States of America" ~ "United States",
+      admin == "Russia" ~ "ROC",
+      TRUE ~ admin
+    ),
+    map_label = dplyr::case_when(
+      admin == "United States of America" ~ "United States",
+      admin == "Russia" ~ "ROC (Russian Olympic Committee)",
+      TRUE ~ admin
+    ),
+    geometry
+  )
+
+unmatched_map_countries <- setdiff(
+  unique(beach_medals$country),
+  medal_map_boundaries$country_key
+)
+if (length(unmatched_map_countries) > 0) {
+  stop(
+    "No Natural Earth boundary found for medal country: ",
+    paste(unmatched_map_countries, collapse = ", ")
+  )
+}
+
+medal_map_world <- medal_map_boundaries |>
+  dplyr::left_join(
+    medal_map_counts_long,
+    by = c("country_key" = "country")
+  ) |>
+  dplyr::mutate(
+    dplyr::across(where(is.numeric), \(count) tidyr::replace_na(count, 0L))
+  )
+
+medal_map_ranking <- medal_map_counts_long |>
+  dplyr::transmute(
+    country,
+    gold = all_all_gold,
+    silver = all_all_silver,
+    bronze = all_all_bronze,
+    total = all_all_total
+  ) |>
+  dplyr::arrange(
+    dplyr::desc(total),
+    dplyr::desc(gold),
+    dplyr::desc(silver),
+    country
+  )
+
+medal_map_filters <- htmltools::div(
+  class = "medal-map-filters",
+  htmltools::div(
+    class = "medal-map-filter",
+    htmltools::tags$label(`for` = "medal-map-year", "Olympic year"),
+    htmltools::tags$select(
+      id = "medal-map-year",
+      class = "form-select",
+      htmltools::tags$option(value = "all", "All editions"),
+      lapply(
+        medal_map_years,
+        \(year) htmltools::tags$option(value = year, year)
+      )
+    )
+  ),
+  htmltools::div(
+    class = "medal-map-filter",
+    htmltools::tags$label(`for` = "medal-map-gender", "Competition"),
+    htmltools::tags$select(
+      id = "medal-map-gender",
+      class = "form-select",
+      htmltools::tags$option(value = "all", "Men and women"),
+      htmltools::tags$option(value = "Men", "Men"),
+      htmltools::tags$option(value = "Women", "Women")
+    )
+  )
+)
+
+medal_map_js <- r"---(
+function(el, x) {
+  var mapWidget = HTMLWidgets.find("#" + el.id);
+  var map = mapWidget.getMap();
+  var yearSelect = document.getElementById("medal-map-year");
+  var genderSelect = document.getElementById("medal-map-gender");
+  var rankingBody = document.querySelector("#medal-country-ranking tbody");
+  var featuresByCountry = {};
+  var layers = [];
+  var palette = ["#e8f1f2", "#b8d7d9", "#76b7bc", "#328991", "#10384a"];
+
+  function registerLayer(layer) {
+    if (layer.feature && layer.feature.properties.country_key) {
+      featuresByCountry[layer.feature.properties.country_key] = layer.feature.properties;
+      layers.push(layer);
+    }
+    if (typeof layer.eachLayer === "function") {
+      layer.eachLayer(registerLayer);
+    }
+  }
+  map.eachLayer(registerLayer);
+
+  function countFor(properties, year, gender, medal) {
+    var yearKey = year === "all" ? "all" : "y" + year;
+    var key = yearKey + "_" + gender.toLowerCase() + "_" + medal;
+    return Number(properties[key] || 0);
+  }
+
+  function fillFor(value, maximum) {
+    if (value === 0 || maximum === 0) {
+      return "#f0eee8";
+    }
+    var position = (value / maximum) * (palette.length - 1);
+    var index = Math.min(Math.floor(position), palette.length - 2);
+    var fraction = position - index;
+    var start = palette[index].match(/[0-9a-f]{2}/gi).map(function(part) {
+      return parseInt(part, 16);
+    });
+    var end = palette[index + 1].match(/[0-9a-f]{2}/gi).map(function(part) {
+      return parseInt(part, 16);
+    });
+    var channels = start.map(function(channel, i) {
+      return Math.round(channel + (end[i] - channel) * fraction);
+    });
+    return "#" + channels.map(function(channel) {
+      return channel.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  function update() {
+    var year = yearSelect.value;
+    var gender = genderSelect.value;
+    var valuesByCountry = {};
+    var maximum = 0;
+
+    Object.keys(featuresByCountry).forEach(function(country) {
+      var properties = featuresByCountry[country];
+      var values = {
+        gold: countFor(properties, year, gender, "gold"),
+        silver: countFor(properties, year, gender, "silver"),
+        bronze: countFor(properties, year, gender, "bronze")
+      };
+      values.total = values.gold + values.silver + values.bronze;
+      valuesByCountry[country] = values;
+      maximum = Math.max(maximum, values.total);
+    });
+
+    layers.forEach(function(layer) {
+      var properties = layer.feature.properties;
+      var values = valuesByCountry[properties.country_key];
+      var tooltip = "<strong>" + properties.map_label + "</strong>" +
+        "<br>Gold: " + values.gold +
+        "<br>Silver: " + values.silver +
+        "<br>Bronze: " + values.bronze +
+        "<br><strong>Total: " + values.total + "</strong>";
+      layer.setStyle({fillColor: fillFor(values.total, maximum)});
+      if (layer.getTooltip()) {
+        layer.setTooltipContent(tooltip);
+      } else {
+        layer.bindTooltip(tooltip, {sticky: true, direction: "auto"});
+      }
+    });
+
+    document.getElementById("medal-map-legend-max").textContent = maximum;
+
+    var rows = Array.prototype.slice.call(rankingBody.querySelectorAll("tr"));
+    rows.forEach(function(row) {
+      var values = valuesByCountry[row.getAttribute("data-country")] ||
+        {gold: 0, silver: 0, bronze: 0, total: 0};
+      row.querySelector(".rank-position").textContent = "";
+      row.querySelector(".gold-count").textContent = values.gold;
+      row.querySelector(".silver-count").textContent = values.silver;
+      row.querySelector(".bronze-count").textContent = values.bronze;
+      row.querySelector(".total-count").textContent = values.total;
+      row.dataset.total = values.total;
+      row.dataset.gold = values.gold;
+      row.dataset.silver = values.silver;
+    });
+
+    rows.sort(function(a, b) {
+      return Number(b.dataset.total) - Number(a.dataset.total) ||
+        Number(b.dataset.gold) - Number(a.dataset.gold) ||
+        Number(b.dataset.silver) - Number(a.dataset.silver) ||
+        a.getAttribute("data-country").localeCompare(
+          b.getAttribute("data-country")
+        );
+    });
+    rows.forEach(function(row, index) {
+      row.querySelector(".rank-position").textContent = index + 1;
+      row.style.display = index < 10 && Number(row.dataset.total) > 0
+        ? ""
+        : "none";
+      rankingBody.appendChild(row);
+    });
+  }
+
+  yearSelect.addEventListener("change", update);
+  genderSelect.addEventListener("change", update);
+  update();
+}
+)---"
+
+medal_map_legend <- htmltools::HTML(
+  paste0(
+    '<div class="medal-map-legend">',
+    '<strong>Total team medals</strong>',
+    '<div class="medal-map-gradient"></div>',
+    '<div class="medal-map-legend-scale"><span>1</span>',
+    '<span id="medal-map-legend-max"></span></div>',
+    '<span class="medal-map-no-medals"><i></i>No medals in selection</span>',
+    "</div>"
+  )
+)
 ```
+
+## Where Olympic medals meet the map
+
+Explore the countries on the podium from 1996 through 2024. The map shades each country by its total team medals; hover over a country for its gold, silver, bronze, and total counts. Use the filters to compare Olympic editions and men's or women's competitions. The ranking below updates with the selected filters.
+
+```{r}
+#| echo: false
+
+medal_map <- leaflet::leaflet(
+  medal_map_world,
+  width = "100%",
+  height = 620,
+  options = leaflet::leafletOptions(minZoom = 1, maxZoom = 6)
+) |>
+  leaflet::addGeoJSON(
+    geojson = geojsonsf::sf_geojson(medal_map_world),
+    layerId = "medal-countries",
+    color = "#ffffff",
+    weight = 0.7,
+    fillColor = "#e8f1f2",
+    fillOpacity = 0.95
+  ) |>
+  leaflet::addControl(medal_map_legend, position = "bottomright") |>
+  leaflet::addControl(
+    htmltools::HTML(
+      '<span class="medal-map-attribution">Country boundaries: Natural Earth</span>'
+    ),
+    position = "bottomleft"
+  ) |>
+  leaflet::setView(lng = 0, lat = 18, zoom = 2) |>
+  htmlwidgets::onRender(medal_map_js)
+
+htmltools::div(
+  class = "medal-map-widget",
+  medal_map_filters,
+  medal_map
+)
+```
+
+**Data note:** Each medal is counted once per country-team and event, not per athlete. The source dataset has medal results through 2016; Tokyo 2020 and Paris 2024 team podiums are added from the official results linked in [Methodology](road-to-gold.qmd#methodology). The 2020 Russian Olympic Committee (ROC) result is shown on Russia's boundary for geographic placement and remains attributed to ROC in the counts.
+
+## Top medal-winning countries
+
+The top 10 ranking reflects the current map filters. Select “All editions” and “Men and women” to see the all-time leaders.
+
+```{r}
+#| echo: false
+
+medal_ranking_rows <- lapply(
+  seq_len(nrow(medal_map_ranking)),
+  \(i) {
+    row <- medal_map_ranking[i, ]
+    htmltools::tags$tr(
+      `data-country` = row$country,
+      htmltools::tags$td(class = "rank-position", i),
+      htmltools::tags$th(scope = "row", row$country),
+      htmltools::tags$td(class = "gold-count", row$gold),
+      htmltools::tags$td(class = "silver-count", row$silver),
+      htmltools::tags$td(class = "bronze-count", row$bronze),
+      htmltools::tags$td(class = "total-count", row$total)
+    )
+  }
+)
+
+htmltools::tags$table(
+  id = "medal-country-ranking",
+  class = "medal-country-ranking",
+  htmltools::tags$thead(
+    htmltools::tags$tr(
+      htmltools::tags$th(scope = "col", "#"),
+      htmltools::tags$th(scope = "col", "Country"),
+      htmltools::tags$th(scope = "col", "Gold"),
+      htmltools::tags$th(scope = "col", "Silver"),
+      htmltools::tags$th(scope = "col", "Bronze"),
+      htmltools::tags$th(scope = "col", "Total")
+    )
+  ),
+  htmltools::tags$tbody(medal_ranking_rows)
+)
+```
+
+With all editions and both events selected, Brazil leads with 14 team medals, followed by the United States with 11; the map and ranking show the same results. Narrow the year and competition filters to compare changing podiums—for example, the 2024 men's podium has three countries with one medal each.
 
 ## A medal race across eight editions
 
@@ -20,6 +368,7 @@ Each line tracks a country's **cumulative team medals** from Atlanta to Paris. U
 ```{r}
 #| echo: false
 #| fig-height: 6
+#| fig-cap: "Cumulative beach volleyball team medals by country and event, 1996–2024. Source: olympicAthletes through 2016 and official Olympic results for 2020 and 2024."
 
 crosstalk::bscols(
   widths = c(2, 2, 8),
@@ -70,6 +419,8 @@ crosstalk::bscols(
 )
 ```
 
+Each rise reflects one or more medal-winning country-teams; a pair earns one team medal rather than two athlete medals. Brazil and the United States finish highest at 14 and 11 team medals, while the country and event filters let you compare how those totals accumulated.
+
 ## What those medals are made of
 
 The next chart compares gold, silver, and bronze team medals by country. Hover for exact counts. Country totals include both men's and women's events across 1996–2024.
@@ -77,6 +428,7 @@ The next chart compares gold, silver, and bronze team medals by country. Hover f
 ```{r}
 #| echo: false
 #| fig-height: 7
+#| fig-cap: "Gold, silver, and bronze team medals by country, 1996–2024. Source: olympicAthletes through 2016 and official Olympic results for 2020 and 2024."
 
 plot_ly(
   country_medal_type_totals,
@@ -90,11 +442,13 @@ plot_ly(
 ) |>
   layout(
     barmode = "stack",
-    xaxis = list(title = NULL, categoryorder = "array", categoryarray = country_medal_totals$country),
+  xaxis = list(title = "Country", categoryorder = "array", categoryarray = country_medal_totals$country),
     yaxis = list(title = "Team medals", rangemode = "tozero"),
     legend = list(orientation = "h"),
     margin = list(b = 110)
   )
 ```
+
+Brazil's seven silvers equal the United States' seven golds, even though Brazil leads in total medals. Hover each stack to compare a country's medal mix; use the map filters above for the edition-specific view.
 
 **Data note:** the 2020 and 2024 athlete-event records do not carry beach-volleyball medal labels in this release of the source. Their podium teams are added from the [Tokyo 2020 results](https://olympics.com/en/olympic-games/tokyo-2020/results/volleyball/beach-volleyball) and [Paris 2024 results](https://olympics.com/en/olympic-games/paris-2024/results/volleyball/beach-volleyball), not inferred from missing values.

@@ -1,0 +1,130 @@
+---
+title: "Olympic Trends"
+---
+
+```{r}
+#| include: false
+source("R/data-prep.R")
+
+medal_timeline_heatmap_data <- medals_by_year_country_total |>
+  mutate(
+    year = factor(year, levels = sort(unique(year))),
+    country = factor(country, levels = rev(country_medal_totals$country)),
+    hover_text = paste0(
+      country,
+      "<br>Olympic year: ", year,
+      "<br>Gold: ", gold,
+      "<br>Silver: ", silver,
+      "<br>Bronze: ", bronze,
+      "<br>Total team medals: ", team_medals
+    )
+  )
+```
+
+## A medal timeline across eight Games
+
+Each tile shows a country's total team medals in that Olympic year, combining men's and women's podiums. Hover over a tile to see the gold, silver, and bronze breakdown.
+
+```{r}
+#| echo: false
+#| fig-height: 7
+#| fig-cap: "Beach volleyball team medals by country and Olympic year, 1996–2024. Hover for medal-type counts."
+
+medal_timeline_chart <- ggplot(
+  medal_timeline_heatmap_data,
+  aes(
+    x = year,
+    y = country,
+    fill = team_medals,
+    text = hover_text
+  )
+) +
+  geom_tile(color = "white", linewidth = 0.4) +
+  scale_fill_gradient(
+    low = "#e8f1f2",
+    high = "#10384a",
+    breaks = seq(
+      min(medal_timeline_heatmap_data$team_medals),
+      max(medal_timeline_heatmap_data$team_medals)
+    ),
+    limits = range(medal_timeline_heatmap_data$team_medals)
+  ) +
+  labs(
+    x = "Olympic year",
+    y = "Medal-winning country",
+    fill = "Team medals",
+    caption = paste(
+      "Each tile aggregates medal-winning country-teams across both events.",
+      "Sources: olympicAthletes through 2016; official Olympic results for 2020 and 2024."
+    )
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(color = "#355260"),
+    axis.text.y = element_text(color = "#294655"),
+    plot.caption = element_text(color = "#637780", hjust = 0)
+  )
+
+plotly::ggplotly(medal_timeline_chart, tooltip = "text")
+```
+
+Darker tiles mark editions when a country won more medals; hover reveals whether those totals came from gold, silver, or bronze. Of the 36 country-Games with at least one medal, 25 contain one medal, 10 contain two, and one contains all three.
+
+## One Olympic timeline, three lenses
+
+The broadest view follows every Summer Olympic athlete-event entry. The gold trace then zooms in: first on all indoor and beach **Volleyball** entries, then on beach volleyball alone, identified from the **event** field. Each panel has its own vertical scale so the specialist event remains visible.
+
+```{r}
+#| echo: false
+#| fig-height: 7
+#| fig-cap: "Athlete-event entries at Summer Olympic Games. Panels use separate vertical scales."
+
+ggplot(
+  participation_by_year,
+  aes(x = year, y = records, color = series, group = series)
+) +
+  geom_line(linewidth = 1.05) +
+  geom_point(size = 2.2) +
+  facet_wrap(~series, ncol = 1, scales = "free_y") +
+  scale_color_manual(
+    values = c(
+      "All Summer sport entries" = "#315d70",
+      "Volleyball sport entries" = "#0e8292",
+      "Beach volleyball event entries" = "#c99837"
+    )
+  ) +
+  scale_x_continuous(breaks = scales::breaks_width(8)) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    x = NULL,
+    y = "Athlete-event records",
+    color = NULL,
+    caption = paste(
+      "Source: olympicAthletes::olympic_athletes.",
+      scales::comma(summer_records_used),
+      "Summer Games records aggregated; the dataset contains",
+      scales::comma(source_records),
+      "records overall."
+    )
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    strip.text = element_text(face = "bold", color = "#10384a"),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.title.y = element_text(color = "#355260"),
+    plot.caption = element_text(color = "#637780", hjust = 0)
+  )
+```
+
+Because each panel has its own vertical scale, compare the shape of the trends rather than their heights across panels. Beach volleyball entries first appear in 1996 (84 athlete-event rows) and reach 96 in 2000, where they remain through 2024.
+
+::: {.callout-note}
+## What counts as a record?
+
+One row represents one athlete at one Games edition in one event—not one unique person or one team. Beach volleyball is filtered from `event` within the Volleyball sport, rather than treating all Volleyball entries as beach volleyball.
+:::
+
+The [Men vs. Women](men-vs-women.qmd) page focuses on beach volleyball participation and podiums by event.

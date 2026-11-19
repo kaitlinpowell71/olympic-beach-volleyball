@@ -20,9 +20,9 @@ The chart counts a medal for the **country-team pair in an event**, not for each
 ```{r}
 #| echo: false
 #| fig-height: 7
-#| fig-cap: "Beach volleyball team medals by country and medal type, 1996–2024."
+#| fig-cap: "Beach volleyball team medals by country and medal type, 1996–2024. Hover for exact counts."
 
-country_medal_type_totals |>
+medal_leader_chart <- country_medal_type_totals |>
   mutate(country = forcats::fct_reorder(country, medal_count, .fun = sum)) |>
   ggplot(aes(x = medal_count, y = country, fill = medal)) +
   geom_col(width = 0.72, color = "white", linewidth = 0.25) +
@@ -35,8 +35,9 @@ country_medal_type_totals |>
     expand = expansion(mult = c(0, 0.06))
   ) +
   labs(
+    title = "Team medals by country",
     x = "Team medals",
-    y = NULL,
+    y = "Country",
     fill = "Medal",
     caption = paste(
       "One team medal per pair and event. Sources: olympicAthletes for 1996–2016;",
@@ -51,7 +52,11 @@ country_medal_type_totals |>
     axis.text.y = element_text(color = "#294655"),
     plot.caption = element_text(color = "#637780", hjust = 0)
   )
+
+plotly::ggplotly(medal_leader_chart, tooltip = c("y", "x", "fill"))
 ```
+
+Brazil leads the total with 14 team medals, while the United States has 11. Their medal mixes differ: Brazil's seven silvers match the U.S. seven golds, so the overall leader is not the gold-medal leader.
 
 ## Methodology {#methodology}
 
@@ -60,6 +65,6 @@ country_medal_type_totals |>
 - For 1996–2016, the source repeats the medal on both athletes' rows. We retain one row for each Games year, event, team identifier, and medal, then normalize team suffixes (such as `-1`) only when aggregating results by country.
 - The package data used here has no beach-volleyball medal labels for 2020 or 2024. We add the six podium teams for each of those editions from the [Tokyo 2020](https://olympics.com/en/olympic-games/tokyo-2020/results/volleyball/beach-volleyball) and [Paris 2024](https://olympics.com/en/olympic-games/paris-2024/results/volleyball/beach-volleyball) official results pages. These are team-level rows, so no athlete-level medal duplication is introduced.
 - Participation charts count athlete-event rows; medal charts count medal-winning teams. A pair therefore contributes two participation records but only one medal.
-- To render the site, install R packages `olympicAthletes`, `tidyverse`, `ggplot2`, `plotly`, and `crosstalk`, then run `quarto render`.
+- To render the site, install R packages `olympicAthletes`, `tidyverse`, `ggplot2`, `plotly`, `crosstalk`, `leaflet`, `rnaturalearth`, and `geojsonsf`, then run `quarto render`.
 
-For other country results, edition details, and filters, head to [Explore the Olympics](explore.qmd).
+For other country results, edition details, and filters, head to [Country Explorer](explore.qmd).

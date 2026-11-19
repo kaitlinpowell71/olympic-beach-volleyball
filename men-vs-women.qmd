@@ -42,29 +42,43 @@ ggplot(
   )
 ```
 
+Recorded participation begins lower for women at the sport's debut: 36 athlete-event rows versus 48 for men in 1996. From 2000 through 2024, both events have 48 rows per Games in this dataset; these are athlete-event counts, not audience or popularity measures.
+
 ### Who reached the podium?
 
 ```{r}
 #| echo: false
-#| fig-height: 5
-#| fig-cap: "Countries winning beach volleyball team medals by edition and event."
+#| fig-width: 13
+#| fig-height: 7
+#| fig-cap: "Each point is one medal-winning country-team. Panels compare men's and women's results by Olympic year; hover for details."
 
-beach_medals |>
+gender_medal_chart <- beach_medals |>
   mutate(
-    country = factor(country, levels = rev(country_medal_totals$country))
+    country = factor(country, levels = rev(country_medal_totals$country)),
+    year = factor(year, levels = sort(unique(year)))
   ) |>
-  ggplot(aes(x = factor(year), y = country, fill = medal)) +
-  geom_tile(width = 0.86, height = 0.88, color = "white", linewidth = 0.3) +
-  facet_wrap(~gender, ncol = 1) +
-  scale_fill_manual(
+  ggplot(
+    aes(
+      x = year,
+      y = country,
+      color = medal,
+      text = paste(country, gender, year, medal, "team medal")
+    )
+  ) +
+  geom_point(
+    position = position_dodge(width = 0.65),
+    size = 2.8
+  ) +
+  facet_wrap(~gender, ncol = 2) +
+  scale_color_manual(
     values = c(Gold = "#c99837", Silver = "#9caab5", Bronze = "#b87950"),
     breaks = c("Gold", "Silver", "Bronze")
   ) +
   labs(
-    x = NULL,
-    y = NULL,
-    fill = "Medal",
-    caption = "Each tile represents one medal-winning country-team. 2020 and 2024 podiums are sourced from official Olympic results."
+    x = "Olympic year",
+    y = "Medal-winning country",
+    color = "Medal",
+    caption = "Medals count country-teams, not athletes. 2020 and 2024 podiums use official Olympic results."
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -74,4 +88,8 @@ beach_medals |>
     panel.grid.minor = element_blank(),
     plot.caption = element_text(color = "#637780", hjust = 0)
   )
+
+plotly::ggplotly(gender_medal_chart, tooltip = "text")
 ```
+
+Across eight editions, each event awards 24 team medals. Brazil leads both tallies (8 women's and 6 men's medals), while the United States has 7 women's and 4 men's; Australia's three medals are all in the women's event.
